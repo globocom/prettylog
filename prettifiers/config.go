@@ -16,4 +16,7 @@ func init() {
 	viper.SetDefault("fields.level", "level")
 	viper.SetDefault("fields.caller", "caller")
 	viper.SetDefault("fields.message", "msg")
+
+	viper.SetDefault("show.timestamp", true)
+	viper.SetDefault("show.caller", false)
 }

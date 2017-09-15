@@ -25,6 +25,7 @@ const (
 var (
 	timeColorFunc   = color.New(color.FgYellow).Add(color.Faint).SprintFunc()
 	loggerColorFunc = color.New(color.FgWhite).Add(color.Faint).SprintFunc()
+	callerColorFunc = color.New(color.FgWhite).Add(color.Faint).SprintFunc()
 	levelColorMap   = map[string]func(...interface{}) string{
 		DEBUG_LEVEL: color.New(color.FgMagenta).SprintFunc(),
 		INFO_LEVEL:  color.New(color.FgBlue).SprintFunc(),
@@ -39,6 +40,8 @@ type jsonPrettifier struct {
 	LoggerField    string
 	CallerField    string
 	MessageField   string
+	ShowTimestamp  bool
+	ShowCaller     bool
 }
 
 func (p *jsonPrettifier) Prettify(line string) string {
@@ -51,17 +54,25 @@ func (p *jsonPrettifier) Prettify(line string) string {
 	time := getAndRemoveField(data, p.TimestampField)
 	level := getAndRemoveField(data, p.LevelField)
 	logger := getAndRemoveField(data, p.LoggerField)
-	//caller := getAndRemoveField(data, p.CallerField)
+	caller := getAndRemoveField(data, p.CallerField)
 	msg := getAndRemoveField(data, p.MessageField)
 
 	levelColorFunc := getLevelColorFunc(level)
 
 	buffer := &bytes.Buffer{}
-	buffer.WriteString(timeColorFunc(time))
-	buffer.WriteString(SEPARATOR)
+
+	if p.ShowTimestamp {
+		buffer.WriteString(timeColorFunc(time))
+		buffer.WriteString(SEPARATOR)
+	}
 
 	if logger != "" {
 		buffer.WriteString(loggerColorFunc(logger))
+		buffer.WriteString(SEPARATOR)
+	}
+
+	if p.ShowCaller {
+		buffer.WriteString(callerColorFunc(caller))
 		buffer.WriteString(SEPARATOR)
 	}
 
@@ -105,5 +116,7 @@ func NewJsonPrettifier() Prettifier {
 		LevelField:     viper.GetString("fields.level"),
 		CallerField:    viper.GetString("fields.caller"),
 		MessageField:   viper.GetString("fields.message"),
+		ShowTimestamp:  viper.GetBool("show.timestamp"),
+		ShowCaller:     viper.GetBool("show.caller"),
 	}
 }
