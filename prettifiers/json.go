@@ -1,15 +1,13 @@
 package prettifiers
 
 import (
-	"encoding/json"
-	"fmt"
-
 	"bytes"
 
 	"strings"
 
 	"github.com/fatih/color"
 	"github.com/spf13/viper"
+	"github.com/tidwall/gjson"
 )
 
 const (
@@ -23,16 +21,27 @@ const (
 )
 
 var (
-	timeColorFunc   = color.New(color.FgYellow).Add(color.Faint).SprintFunc()
-	loggerColorFunc = color.New(color.FgWhite).Add(color.Faint).SprintFunc()
-	callerColorFunc = color.New(color.FgWhite).Add(color.Faint).SprintFunc()
-	levelColorMap   = map[string]func(...interface{}) string{
+	timeColorFunc       = color.New(color.FgYellow).Add(color.Faint).SprintFunc()
+	loggerColorFunc     = color.New(color.FgWhite).Add(color.Faint).SprintFunc()
+	callerColorFunc     = color.New(color.FgWhite).Add(color.Faint).SprintFunc()
+	messageColorFunc    = color.New(color.FgWhite).SprintFunc()
+	fieldValueColorFunc = color.New(color.FgWhite).SprintFunc()
+	levelColorMap       = map[string]func(...interface{}) string{
 		DEBUG_LEVEL: color.New(color.FgMagenta).SprintFunc(),
 		INFO_LEVEL:  color.New(color.FgBlue).SprintFunc(),
 		WARN_LEVEL:  color.New(color.FgYellow).SprintFunc(),
 		ERROR_LEVEL: color.New(color.FgRed).SprintFunc(),
 	}
 )
+
+type parsedLine struct {
+	Timestamp string
+	Logger    string
+	Caller    string
+	Level     string
+	Message   string
+	Fields    [][]string
+}
 
 type jsonPrettifier struct {
 	TimestampField string
@@ -45,60 +54,71 @@ type jsonPrettifier struct {
 }
 
 func (p *jsonPrettifier) Prettify(line string) string {
-	var data map[string]interface{}
-	err := json.Unmarshal([]byte(line), &data)
-	if err != nil {
+	if !gjson.Valid(line) {
 		return line
 	}
 
-	time := getAndRemoveField(data, p.TimestampField)
-	level := getAndRemoveField(data, p.LevelField)
-	logger := getAndRemoveField(data, p.LoggerField)
-	caller := getAndRemoveField(data, p.CallerField)
-	msg := getAndRemoveField(data, p.MessageField)
+	parsed := p.parseLine(line)
+	return p.generateFormattedLine(parsed)
+}
 
-	levelColorFunc := getLevelColorFunc(level)
+func (p *jsonPrettifier) parseLine(line string) *parsedLine {
+	parsed := &parsedLine{}
 
+	gjson.Parse(line).ForEach(func(key, value gjson.Result) bool {
+		switch key.String() {
+		case p.TimestampField:
+			parsed.Timestamp = value.String()
+		case p.LoggerField:
+			parsed.Logger = value.String()
+		case p.CallerField:
+			parsed.Caller = value.String()
+		case p.LevelField:
+			parsed.Level = value.String()
+		case p.MessageField:
+			parsed.Message = value.String()
+		default:
+			parsed.Fields = append(parsed.Fields, []string{key.String(), value.String()})
+		}
+		return true
+	})
+
+	return parsed
+}
+
+func (p *jsonPrettifier) generateFormattedLine(parsed *parsedLine) string {
+	levelColorFunc := getLevelColorFunc(parsed.Level)
 	buffer := &bytes.Buffer{}
 
 	if p.ShowTimestamp {
-		buffer.WriteString(timeColorFunc(time))
+		buffer.WriteString(timeColorFunc(parsed.Timestamp))
 		buffer.WriteString(SEPARATOR)
 	}
 
-	if logger != "" {
-		buffer.WriteString(loggerColorFunc(logger))
+	if parsed.Logger != "" {
+		buffer.WriteString(loggerColorFunc(parsed.Logger))
 		buffer.WriteString(SEPARATOR)
 	}
 
 	if p.ShowCaller {
-		buffer.WriteString(callerColorFunc(caller))
+		buffer.WriteString(callerColorFunc(parsed.Caller))
 		buffer.WriteString(SEPARATOR)
 	}
 
-	buffer.WriteString(levelColorFunc(strings.ToUpper(level)))
+	buffer.WriteString(levelColorFunc(strings.ToUpper(parsed.Level)))
 	buffer.WriteString(SEPARATOR)
 
-	buffer.WriteString(msg)
+	buffer.WriteString(messageColorFunc(parsed.Message))
 	buffer.WriteString(SEPARATOR)
 
-	for field, value := range data {
-		buffer.WriteString(levelColorFunc(field))
+	for _, field := range parsed.Fields {
+		buffer.WriteString(levelColorFunc(field[0]))
 		buffer.WriteString(FIELD_SEPARATOR)
-		buffer.WriteString(fmt.Sprintf("%v", value))
+		buffer.WriteString(fieldValueColorFunc(field[1]))
 		buffer.WriteString(SEPARATOR)
 	}
 
 	return buffer.String()
-}
-
-func getAndRemoveField(data map[string]interface{}, field string) string {
-	if value, exists := data[field]; exists {
-		delete(data, field)
-		return fmt.Sprintf("%v", value)
-	} else {
-		return ""
-	}
 }
 
 func getLevelColorFunc(level string) func(...interface{}) string {
