@@ -1,6 +1,6 @@
 fields:
-  timestamp: ts
-  logger:
-  level:
-  caller:
-  message:
+  timestamp: time
+  logger: logger
+  level: level
+  caller: caller
+  message: msg
