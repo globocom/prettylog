@@ -1,6 +1,24 @@
-fields:
-  timestamp: time
-  logger: logger
-  level: level
-  caller: caller
-  message: msg
+timestamp:
+  name: time
+  visible: true
+  padding: 0
+
+logger:
+  name: logger
+  visible: true
+  padding: 0
+
+caller:
+  name: caller
+  visible: false
+  padding: 0
+
+level:
+  name: msg
+  visible: false
+  padding: 0
+
+message:
+  name: msg
+  visible: false
+  padding: 0

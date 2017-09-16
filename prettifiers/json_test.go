@@ -3,6 +3,7 @@ package prettifiers_test
 import (
 	"strings"
 
+	"github.com/globocom/pretty-log/config"
 	. "github.com/globocom/pretty-log/prettifiers"
 
 	"fmt"
@@ -30,6 +31,7 @@ var _ = Describe("JSON prettifier", func() {
 	var sut Prettifier
 
 	BeforeEach(func() {
+		config.Load()
 		setDefaultConfig()
 		sut = NewJsonPrettifier()
 	})
@@ -96,13 +98,12 @@ var _ = Describe("JSON prettifier", func() {
 })
 
 func setDefaultConfig() {
-	viper.Set("fields.timestamp", "time")
-	viper.Set("fields.logger", "logger")
-	viper.Set("fields.level", "level")
-	viper.Set("fields.caller", "caller")
-	viper.Set("fields.msg", "msg")
-	viper.Set("show.timestamp", true)
-	viper.Set("show.caller", true)
+	viper.Set("timestamp.key", "time")
+	viper.Set("logger.key", "logger")
+	viper.Set("caller.key", "caller")
+	viper.Set("caller.visible", true)
+	viper.Set("level.key", "level")
+	viper.Set("message.key", "msg")
 }
 
 func getSampleJson(level string) string {

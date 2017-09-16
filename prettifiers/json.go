@@ -8,8 +8,8 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
-	"github.com/spf13/viper"
 	"github.com/tidwall/gjson"
+	"github.com/globocom/pretty-log/config"
 )
 
 const (
@@ -47,39 +47,32 @@ type parsedLine struct {
 	Fields    [][]string
 }
 
-type jsonPrettifier struct {
-	TimestampField string
-	LevelField     string
-	LoggerField    string
-	CallerField    string
-	MessageField   string
-	ShowTimestamp  bool
-	ShowCaller     bool
-}
+type jsonPrettifier struct{}
 
 func (p *jsonPrettifier) Prettify(line string) string {
 	if !gjson.Valid(line) {
 		return line
 	}
 
-	parsed := p.parseLine(line)
-	return p.generateFormattedLine(parsed)
+	settings := config.GetSettings()
+	parsed := parseLine(settings, line)
+	return generateFormattedLine(settings, parsed)
 }
 
-func (p *jsonPrettifier) parseLine(line string) *parsedLine {
+func parseLine(settings *config.Settings, line string) *parsedLine {
 	parsed := &parsedLine{}
 
 	gjson.Parse(line).ForEach(func(key, value gjson.Result) bool {
 		switch key.String() {
-		case p.TimestampField:
+		case settings.Timestamp.Key:
 			parsed.Timestamp = value.String()
-		case p.LoggerField:
+		case settings.Logger.Key:
 			parsed.Logger = value.String()
-		case p.CallerField:
+		case settings.Caller.Key:
 			parsed.Caller = value.String()
-		case p.LevelField:
+		case settings.Level.Key:
 			parsed.Level = value.String()
-		case p.MessageField:
+		case settings.Message.Key:
 			parsed.Message = value.String()
 		default:
 			parsed.Fields = append(parsed.Fields, []string{key.String(), value.String()})
@@ -90,21 +83,21 @@ func (p *jsonPrettifier) parseLine(line string) *parsedLine {
 	return parsed
 }
 
-func (p *jsonPrettifier) generateFormattedLine(parsed *parsedLine) string {
+func generateFormattedLine(settings *config.Settings, parsed *parsedLine) string {
 	levelColorFunc := getLevelColorFunc(parsed.Level)
 	buffer := &bytes.Buffer{}
 
-	if p.ShowTimestamp {
+	if settings.Timestamp.Visible {
 		buffer.WriteString(timeColorFunc(parsed.Timestamp))
 		buffer.WriteString(SEPARATOR)
 	}
 
 	if parsed.Logger != "" {
-		buffer.WriteString(loggerColorFunc(fmt.Sprintf("%-15s", parsed.Logger)))
+		buffer.WriteString(loggerColorFunc(parsed.Logger))
 		buffer.WriteString(SEPARATOR)
 	}
 
-	if p.ShowCaller {
+	if settings.Caller.Visible {
 		buffer.WriteString(callerColorFunc(parsed.Caller))
 		buffer.WriteString(SEPARATOR)
 	}
@@ -112,7 +105,7 @@ func (p *jsonPrettifier) generateFormattedLine(parsed *parsedLine) string {
 	buffer.WriteString(levelColorFunc(strings.ToUpper(parsed.Level)))
 	buffer.WriteString(SEPARATOR)
 
-	buffer.WriteString(messageColorFunc(fmt.Sprintf("%-40s", parsed.Message)))
+	buffer.WriteString(messageColorFunc(parsed.Message))
 	buffer.WriteString(SEPARATOR)
 
 	for _, field := range parsed.Fields {
@@ -134,13 +127,5 @@ func getLevelColorFunc(level string) func(...interface{}) string {
 }
 
 func NewJsonPrettifier() Prettifier {
-	return &jsonPrettifier{
-		TimestampField: viper.GetString("fields.timestamp"),
-		LoggerField:    viper.GetString("fields.logger"),
-		LevelField:     viper.GetString("fields.level"),
-		CallerField:    viper.GetString("fields.caller"),
-		MessageField:   viper.GetString("fields.message"),
-		ShowTimestamp:  viper.GetBool("show.timestamp"),
-		ShowCaller:     viper.GetBool("show.caller"),
-	}
+	return &jsonPrettifier{}
 }

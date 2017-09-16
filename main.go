@@ -6,10 +6,16 @@ import (
 
 	"fmt"
 
+	"github.com/globocom/pretty-log/config"
 	"github.com/globocom/pretty-log/prettifiers"
 )
 
 func main() {
+	err := config.Load()
+	if err != nil {
+		panic(err)
+	}
+
 	prettifier := prettifiers.NewJsonPrettifier()
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
