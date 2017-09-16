@@ -124,8 +124,8 @@ func getFormattedLine(level string, levelColor color.Attribute) string {
 		color.New(color.FgWhite).Add(color.Faint).Sprint(LOGGER),
 		color.New(color.FgWhite).Add(color.Faint).Sprint(CALLER),
 		color.New(levelColor).Sprint(strings.ToUpper(level)),
-		color.New(color.FgWhite).Sprint(MESSAGE),
-		color.New(levelColor).Sprint(FIELD1_NAME), color.New(color.FgWhite).Sprint(FIELD1_VALUE),
-		color.New(levelColor).Sprint(FIELD2_NAME), color.New(color.FgWhite).Sprint(FIELD2_VALUE),
-		color.New(levelColor).Sprint(FIELD3_NAME), color.New(color.FgWhite).Sprint(FIELD3_VALUE))
+		MESSAGE,
+		color.New(levelColor).Sprint(FIELD1_NAME), FIELD1_VALUE,
+		color.New(levelColor).Sprint(FIELD2_NAME), FIELD2_VALUE,
+		color.New(levelColor).Sprint(FIELD3_NAME), FIELD3_VALUE)
 }

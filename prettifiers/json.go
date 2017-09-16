@@ -5,6 +5,8 @@ import (
 
 	"strings"
 
+	"fmt"
+
 	"github.com/fatih/color"
 	"github.com/spf13/viper"
 	"github.com/tidwall/gjson"
@@ -21,11 +23,13 @@ const (
 )
 
 var (
+	noColorFunc = func(a ...interface{}) string { return fmt.Sprint(a...) }
+
 	timeColorFunc       = color.New(color.FgYellow).Add(color.Faint).SprintFunc()
 	loggerColorFunc     = color.New(color.FgWhite).Add(color.Faint).SprintFunc()
 	callerColorFunc     = color.New(color.FgWhite).Add(color.Faint).SprintFunc()
-	messageColorFunc    = color.New(color.FgWhite).SprintFunc()
-	fieldValueColorFunc = color.New(color.FgWhite).SprintFunc()
+	messageColorFunc    = noColorFunc
+	fieldValueColorFunc = noColorFunc
 	levelColorMap       = map[string]func(...interface{}) string{
 		DEBUG_LEVEL: color.New(color.FgMagenta).SprintFunc(),
 		INFO_LEVEL:  color.New(color.FgBlue).SprintFunc(),
@@ -96,7 +100,7 @@ func (p *jsonPrettifier) generateFormattedLine(parsed *parsedLine) string {
 	}
 
 	if parsed.Logger != "" {
-		buffer.WriteString(loggerColorFunc(parsed.Logger))
+		buffer.WriteString(loggerColorFunc(fmt.Sprintf("%-15s", parsed.Logger)))
 		buffer.WriteString(SEPARATOR)
 	}
 
@@ -108,7 +112,7 @@ func (p *jsonPrettifier) generateFormattedLine(parsed *parsedLine) string {
 	buffer.WriteString(levelColorFunc(strings.ToUpper(parsed.Level)))
 	buffer.WriteString(SEPARATOR)
 
-	buffer.WriteString(messageColorFunc(parsed.Message))
+	buffer.WriteString(messageColorFunc(fmt.Sprintf("%-40s", parsed.Message)))
 	buffer.WriteString(SEPARATOR)
 
 	for _, field := range parsed.Fields {
