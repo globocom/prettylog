@@ -1,11 +1,15 @@
 package config
 
 import (
+	"sync"
+
+	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
 
 var (
 	settings Settings
+	mu       sync.RWMutex
 )
 
 func Load() error {
@@ -24,15 +28,34 @@ func Load() error {
 		return err
 	}
 
-	err = viper.Unmarshal(&settings)
+	err = updateSettings()
 	if err != nil {
 		return err
 	}
 
+	viper.OnConfigChange(func(e fsnotify.Event) {
+		updateSettings()
+	})
+	viper.WatchConfig()
+
+	return nil
+}
+
+func updateSettings() error {
+	mu.Lock()
+	defer mu.Unlock()
+
+	err := viper.Unmarshal(&settings)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func GetSettings() *Settings {
+	mu.RLock()
+	defer mu.RUnlock()
+
 	return &settings
 }
 
