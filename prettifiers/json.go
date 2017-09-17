@@ -5,8 +5,6 @@ import (
 
 	"strings"
 
-	"fmt"
-
 	"github.com/fatih/color"
 	"github.com/tidwall/gjson"
 	"github.com/globocom/pretty-log/config"
@@ -23,18 +21,16 @@ const (
 )
 
 var (
-	noColorFunc = func(a ...interface{}) string { return fmt.Sprint(a...) }
-
-	timeColorFunc       = color.New(color.FgYellow).Add(color.Faint).SprintFunc()
-	loggerColorFunc     = color.New(color.FgWhite).Add(color.Faint).SprintFunc()
-	callerColorFunc     = color.New(color.FgWhite).Add(color.Faint).SprintFunc()
-	messageColorFunc    = noColorFunc
-	fieldValueColorFunc = noColorFunc
-	levelColorMap       = map[string]func(...interface{}) string{
-		DEBUG_LEVEL: color.New(color.FgMagenta).SprintFunc(),
-		INFO_LEVEL:  color.New(color.FgBlue).SprintFunc(),
-		WARN_LEVEL:  color.New(color.FgYellow).SprintFunc(),
-		ERROR_LEVEL: color.New(color.FgRed).SprintFunc(),
+	noColor        = (*color.Color)(nil)
+	timestampColor = color.New(color.FgYellow).Add(color.Faint)
+	loggerColor    = color.New(color.FgWhite).Add(color.Faint)
+	callerColor    = color.New(color.FgWhite).Add(color.Faint)
+	messageColor   = noColor
+	levelColor     = map[string]*color.Color{
+		DEBUG_LEVEL: color.New(color.FgMagenta),
+		INFO_LEVEL:  color.New(color.FgBlue),
+		WARN_LEVEL:  color.New(color.FgYellow),
+		ERROR_LEVEL: color.New(color.FgRed),
 	}
 )
 
@@ -84,45 +80,64 @@ func parseLine(settings *config.Settings, line string) *parsedLine {
 }
 
 func generateFormattedLine(settings *config.Settings, parsed *parsedLine) string {
-	levelColorFunc := getLevelColorFunc(parsed.Level)
+	levelColor := getLevelColor(parsed.Level)
 	buffer := &bytes.Buffer{}
 
 	if settings.Timestamp.Visible {
-		buffer.WriteString(timeColorFunc(parsed.Timestamp))
-		buffer.WriteString(SEPARATOR)
+		writeTo(buffer, parsed.Timestamp, 0, timestampColor)
 	}
 
-	if parsed.Logger != "" {
-		buffer.WriteString(loggerColorFunc(parsed.Logger))
-		buffer.WriteString(SEPARATOR)
+	if settings.Logger.Visible && parsed.Logger != "" {
+		writeTo(buffer, parsed.Logger, settings.Logger.Padding, loggerColor)
 	}
 
 	if settings.Caller.Visible {
-		buffer.WriteString(callerColorFunc(parsed.Caller))
-		buffer.WriteString(SEPARATOR)
+		writeTo(buffer, parsed.Caller, settings.Caller.Padding, callerColor)
 	}
 
-	buffer.WriteString(levelColorFunc(strings.ToUpper(parsed.Level)))
-	buffer.WriteString(SEPARATOR)
-
-	buffer.WriteString(messageColorFunc(parsed.Message))
-	buffer.WriteString(SEPARATOR)
-
-	for _, field := range parsed.Fields {
-		buffer.WriteString(levelColorFunc(field[0]))
-		buffer.WriteString(FIELD_SEPARATOR)
-		buffer.WriteString(fieldValueColorFunc(field[1]))
-		buffer.WriteString(SEPARATOR)
+	if settings.Level.Visible {
+		writeTo(buffer, strings.ToUpper(parsed.Level), settings.Level.Padding, levelColor)
 	}
+
+	writeTo(buffer, parsed.Message, settings.Message.Padding, messageColor)
+	writeFieldsTo(buffer, parsed.Fields, levelColor)
 
 	return buffer.String()
 }
 
-func getLevelColorFunc(level string) func(...interface{}) string {
-	if value, exists := levelColorMap[strings.ToLower(level)]; exists {
+func writeTo(buffer *bytes.Buffer, value string, padding int, color *color.Color) {
+	value = padRight(value, padding)
+
+	if color != nil {
+		value = color.Sprint(value)
+	}
+
+	buffer.WriteString(value)
+	buffer.WriteString(SEPARATOR)
+}
+
+func writeFieldsTo(buffer *bytes.Buffer, fields [][]string, color *color.Color) {
+	for _, field := range fields {
+		buffer.WriteString(color.Sprint(field[0]))
+		buffer.WriteString(FIELD_SEPARATOR)
+		buffer.WriteString(field[1])
+		buffer.WriteString(SEPARATOR)
+	}
+}
+
+func padRight(str string, size int) string {
+	size = size - len(str)
+	if size < 0 {
+		size = 0
+	}
+	return str + strings.Repeat(" ", size)
+}
+
+func getLevelColor(level string) *color.Color {
+	if value, exists := levelColor[strings.ToLower(level)]; exists {
 		return value
 	} else {
-		return color.New(color.FgWhite).SprintFunc()
+		return nil
 	}
 }
 
