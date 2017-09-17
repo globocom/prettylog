@@ -1,24 +1,22 @@
 timestamp:
-  name: time
+  key: time
   visible: true
-  padding: 0
 
 logger:
-  name: logger
+  key: logger
   visible: true
   padding: 0
 
 caller:
-  name: caller
+  key: caller
   visible: false
   padding: 0
 
 level:
-  name: msg
-  visible: false
-  padding: 0
+  key: level
+  visible: true
+  padding: 5
 
 message:
-  name: msg
-  visible: false
+  key: msg
   padding: 0
