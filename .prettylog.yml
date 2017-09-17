@@ -1,6 +1,7 @@
 timestamp:
   key: time
   visible: true
+  colors: [32,12,34]
 
 logger:
   key: logger
@@ -16,6 +17,12 @@ level:
   key: level
   visible: true
   padding: 5
+  colors:
+    debug:
+    info:
+    warn:
+    error:
+    fatal:
 
 message:
   key: msg

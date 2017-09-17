@@ -3,6 +3,9 @@ package config
 import (
 	"sync"
 
+	"strings"
+
+	"github.com/fatih/color"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
@@ -13,11 +16,7 @@ var (
 )
 
 func Load() error {
-	setFieldDefaults("timestamp", &Field{"time", true, 0})
-	setFieldDefaults("logger", &Field{"logger", true, 0})
-	setFieldDefaults("caller", &Field{"caller", false, 0})
-	setFieldDefaults("level", &Field{"level", true, 0})
-	setFieldDefaults("message", &Field{"msg", true, 0})
+	setDefaults()
 
 	viper.SetConfigType("yaml")
 	viper.SetConfigName(".prettylog")
@@ -59,17 +58,41 @@ func GetSettings() *Settings {
 	return &settings
 }
 
-func setFieldDefaults(name string, field *Field) {
-	viper.SetDefault(name+".key", field.Key)
-	viper.SetDefault(name+".visible", field.Visible)
-	viper.SetDefault(name+".padding", field.Padding)
+func setDefaults() {
+	// Common settings
+	setFieldDefaults("timestamp", "time", true, 0, color.FgYellow, color.Faint)
+	setFieldDefaults("logger", "logger", true, 0, color.FgWhite, color.Faint)
+	setFieldDefaults("caller", "caller", false, 0, color.FgWhite, color.Faint)
+	setFieldDefaults("level", "level", true, 0)
+	setFieldDefaults("message", "msg", true, 0)
+
+	// Level-specific settings
+	viper.SetDefault("level.colors.debug", []color.Attribute{color.FgMagenta})
+	viper.SetDefault("level.colors.info", []color.Attribute{color.FgBlue})
+	viper.SetDefault("level.colors.warn", []color.Attribute{color.FgYellow})
+	viper.SetDefault("level.colors.error", []color.Attribute{color.FgRed})
+	viper.SetDefault("level.colors.fatal", []color.Attribute{color.FgBlack, color.BgRed})
+}
+
+func setFieldDefaults(name string, key string, visible bool, padding int, colorAttrs ...color.Attribute) {
+	viper.SetDefault(name+".key", key)
+	viper.SetDefault(name+".visible", visible)
+	viper.SetDefault(name+".padding", padding)
+	viper.SetDefault(name+".color", colorAttrs)
+}
+
+type Field struct {
+	Key     string
+	Visible bool
+	Padding int
+	Color   []color.Attribute
 }
 
 type Settings struct {
 	Timestamp TimestampField
 	Logger    Field
 	Caller    Field
-	Level     Field
+	Level     LevelField
 	Message   Field
 }
 
@@ -78,8 +101,15 @@ type TimestampField struct {
 	Format string
 }
 
-type Field struct {
-	Key     string
-	Visible bool
-	Padding int
+type LevelField struct {
+	Field  `mapstructure:",squash"`
+	Colors map[string][]color.Attribute
+}
+
+func (f *LevelField) GetColorAttr(level string) []color.Attribute {
+	if c, exists := f.Colors[strings.ToLower(level)]; exists {
+		return c
+	} else {
+		return []color.Attribute{}
+	}
 }

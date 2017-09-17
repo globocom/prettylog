@@ -11,27 +11,8 @@ import (
 )
 
 const (
-	DEBUG_LEVEL = "debug"
-	INFO_LEVEL  = "info"
-	WARN_LEVEL  = "warn"
-	ERROR_LEVEL = "error"
-
 	SEPARATOR       = " "
 	FIELD_SEPARATOR = "="
-)
-
-var (
-	noColor        = (*color.Color)(nil)
-	timestampColor = color.New(color.FgYellow).Add(color.Faint)
-	loggerColor    = color.New(color.FgWhite).Add(color.Faint)
-	callerColor    = color.New(color.FgWhite).Add(color.Faint)
-	messageColor   = noColor
-	levelColor     = map[string]*color.Color{
-		DEBUG_LEVEL: color.New(color.FgMagenta),
-		INFO_LEVEL:  color.New(color.FgBlue),
-		WARN_LEVEL:  color.New(color.FgYellow),
-		ERROR_LEVEL: color.New(color.FgRed),
-	}
 )
 
 type parsedLine struct {
@@ -80,32 +61,32 @@ func parseLine(settings *config.Settings, line string) *parsedLine {
 }
 
 func generateFormattedLine(settings *config.Settings, parsed *parsedLine) string {
-	levelColor := getLevelColor(parsed.Level)
 	buffer := &bytes.Buffer{}
 
 	if settings.Timestamp.Visible {
-		writeTo(buffer, parsed.Timestamp, 0, timestampColor)
+		writeTo(buffer, parsed.Timestamp, 0, settings.Timestamp.Color)
 	}
 
 	if settings.Logger.Visible && parsed.Logger != "" {
-		writeTo(buffer, parsed.Logger, settings.Logger.Padding, loggerColor)
+		writeTo(buffer, parsed.Logger, settings.Logger.Padding, settings.Logger.Color)
 	}
 
 	if settings.Caller.Visible {
-		writeTo(buffer, parsed.Caller, settings.Caller.Padding, callerColor)
+		writeTo(buffer, parsed.Caller, settings.Caller.Padding, settings.Caller.Color)
 	}
 
 	if settings.Level.Visible {
-		writeTo(buffer, strings.ToUpper(parsed.Level), settings.Level.Padding, levelColor)
+		writeTo(buffer, strings.ToUpper(parsed.Level), settings.Level.Padding, settings.Level.GetColorAttr(parsed.Level))
 	}
 
-	writeTo(buffer, parsed.Message, settings.Message.Padding, messageColor)
-	writeFieldsTo(buffer, parsed.Fields, levelColor)
+	writeTo(buffer, parsed.Message, settings.Message.Padding, settings.Message.Color)
+	writeFieldsTo(buffer, parsed.Fields, settings.Level.GetColorAttr(parsed.Level))
 
 	return buffer.String()
 }
 
-func writeTo(buffer *bytes.Buffer, value string, padding int, color *color.Color) {
+func writeTo(buffer *bytes.Buffer, value string, padding int, colorAttrs []color.Attribute) {
+	color := parseColor(colorAttrs)
 	value = padRight(value, padding)
 
 	if color != nil {
@@ -116,9 +97,15 @@ func writeTo(buffer *bytes.Buffer, value string, padding int, color *color.Color
 	buffer.WriteString(SEPARATOR)
 }
 
-func writeFieldsTo(buffer *bytes.Buffer, fields [][]string, color *color.Color) {
+func writeFieldsTo(buffer *bytes.Buffer, fields [][]string, colorsAttrs []color.Attribute) {
+	color := parseColor(colorsAttrs)
+
 	for _, field := range fields {
-		buffer.WriteString(color.Sprint(field[0]))
+		if color != nil {
+			buffer.WriteString(color.Sprint(field[0]))
+		} else {
+			buffer.WriteString(field[0])
+		}
 		buffer.WriteString(FIELD_SEPARATOR)
 		buffer.WriteString(field[1])
 		buffer.WriteString(SEPARATOR)
@@ -133,12 +120,22 @@ func padRight(str string, size int) string {
 	return str + strings.Repeat(" ", size)
 }
 
-func getLevelColor(level string) *color.Color {
-	if value, exists := levelColor[strings.ToLower(level)]; exists {
-		return value
-	} else {
-		return nil
+func parseColor(attributes []color.Attribute) *color.Color {
+	var c *color.Color
+
+	if len(attributes) > 0 {
+		c = color.New(attributes[0])
 	}
+
+	if len(attributes) > 1 {
+		c.Add(attributes[1])
+	}
+
+	if len(attributes) > 2 {
+		c.Add(attributes[2])
+	}
+
+	return c
 }
 
 func NewJsonPrettifier() Prettifier {
