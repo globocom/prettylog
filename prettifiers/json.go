@@ -7,7 +7,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/tidwall/gjson"
-	"github.com/globocom/pretty-log/config"
+	"github.com/globocom/prettylog/config"
 )
 
 const (

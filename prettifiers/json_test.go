@@ -3,8 +3,8 @@ package prettifiers_test
 import (
 	"strings"
 
-	"github.com/globocom/pretty-log/config"
-	. "github.com/globocom/pretty-log/prettifiers"
+	"github.com/globocom/prettylog/config"
+	. "github.com/globocom/prettylog/prettifiers"
 
 	"fmt"
 

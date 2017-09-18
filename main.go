@@ -6,8 +6,8 @@ import (
 
 	"fmt"
 
-	"github.com/globocom/pretty-log/config"
-	"github.com/globocom/pretty-log/prettifiers"
+	"github.com/globocom/prettylog/config"
+	"github.com/globocom/prettylog/prettifiers"
 )
 
 func main() {
