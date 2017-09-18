@@ -5,6 +5,9 @@ import (
 
 	"strings"
 
+	"fmt"
+	"os"
+
 	"github.com/fatih/color"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
@@ -15,7 +18,7 @@ var (
 	mu       sync.RWMutex
 )
 
-func Load() error {
+func Load(verbose bool) {
 	setDefaults()
 
 	viper.SetConfigType("yaml")
@@ -23,32 +26,26 @@ func Load() error {
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("$HOME/")
 	err := viper.ReadInConfig()
-	if err != nil {
-		return err
+	if err != nil && verbose {
+		fmt.Fprintf(os.Stderr, "Error reading configuration file: %v\n", err)
 	}
 
-	err = updateSettings()
-	if err != nil {
-		return err
-	}
+	updateSettings(verbose)
 
 	viper.OnConfigChange(func(e fsnotify.Event) {
-		updateSettings()
+		updateSettings(verbose)
 	})
 	viper.WatchConfig()
-
-	return nil
 }
 
-func updateSettings() error {
+func updateSettings(verbose bool) {
 	mu.Lock()
 	defer mu.Unlock()
 
 	err := viper.Unmarshal(&settings)
-	if err != nil {
-		return err
+	if err != nil && verbose {
+		fmt.Fprintf(os.Stderr, "Error loading configuration file: %v\n", err)
 	}
-	return nil
 }
 
 func GetSettings() *Settings {

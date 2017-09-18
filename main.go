@@ -6,15 +6,23 @@ import (
 
 	"fmt"
 
+	"flag"
+
+	"io/ioutil"
+	"log"
+
 	"github.com/globocom/prettylog/config"
 	"github.com/globocom/prettylog/prettifiers"
 )
 
 func main() {
-	err := config.Load()
-	if err != nil {
-		panic(err)
-	}
+	// Disables log output so libraries won't pollute the stdout
+	log.SetOutput(ioutil.Discard)
+
+	verbosePtr := flag.Bool("verbose", false, "turns on verbose mode")
+	flag.Parse()
+
+	config.Load(*verbosePtr)
 
 	prettifier := prettifiers.NewJsonPrettifier()
 	scanner := bufio.NewScanner(os.Stdin)
