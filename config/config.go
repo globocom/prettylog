@@ -57,7 +57,7 @@ func GetSettings() *Settings {
 
 func setDefaults() {
 	// Common settings
-	setFieldDefaults("timestamp", "time", true, 0, color.FgYellow, color.Faint)
+	setFieldDefaults("timestamp", "ts", true, 0, color.FgYellow, color.Faint)
 	setFieldDefaults("logger", "logger", true, 0, color.FgWhite, color.Faint)
 	setFieldDefaults("caller", "caller", false, 0, color.FgWhite, color.Faint)
 	setFieldDefaults("level", "level", true, 0)
