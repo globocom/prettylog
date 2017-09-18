@@ -71,7 +71,7 @@ func setDefaults() {
 	viper.SetDefault("level.colors.info", []color.Attribute{color.FgBlue})
 	viper.SetDefault("level.colors.warn", []color.Attribute{color.FgYellow})
 	viper.SetDefault("level.colors.error", []color.Attribute{color.FgRed})
-	viper.SetDefault("level.colors.fatal", []color.Attribute{color.FgBlack, color.BgRed})
+	viper.SetDefault("level.colors.fatal", []color.Attribute{color.FgRed, color.Bold})
 }
 
 func setFieldDefaults(name string, key string, visible bool, padding int, colorAttrs ...color.Attribute) {
