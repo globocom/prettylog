@@ -58,10 +58,10 @@ func GetSettings() *Settings {
 func setDefaults() {
 	// Common settings
 	setFieldDefaults("timestamp", "ts", true, 0, color.FgYellow, color.Faint)
-	setFieldDefaults("logger", "logger", true, 0, color.FgWhite, color.Faint)
-	setFieldDefaults("caller", "caller", false, 0, color.FgWhite, color.Faint)
-	setFieldDefaults("level", "level", true, 0)
-	setFieldDefaults("message", "msg", true, 0)
+	setFieldDefaults("logger", "logger", true, 10, color.FgWhite, color.Faint)
+	setFieldDefaults("caller", "caller", false, 20, color.FgWhite, color.Faint)
+	setFieldDefaults("level", "level", true, 5)
+	setFieldDefaults("message", "msg", true, 40)
 
 	// Level-specific settings
 	viper.SetDefault("level.colors.debug", []color.Attribute{color.FgMagenta})
