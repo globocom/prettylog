@@ -14,7 +14,7 @@ if [[ -z "${GOPATH}" ]]; then
     exit 1
 fi
 
-install_path="${GOPATH}/src/github.com/globocom/prettylog2"
+install_path="${GOPATH}/src/github.com/globocom/prettylog"
 
 if [ -d "$install_path" ]; then
     echo -e "\e[33m=> Updating to latest version...\e[0m"
