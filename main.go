@@ -17,7 +17,7 @@ import (
 
 func main() {
 	if isCharDevice() {
-		fmt.Fprintln(os.Stderr, "Prettylog should be used to process the output of another application")
+		fmt.Fprintln(os.Stderr, "error: Prettylog should be used to process the output of another application")
 		os.Exit(1)
 	}
 
@@ -43,7 +43,7 @@ func main() {
 	}
 
 	if err := scanner.Err(); err != nil {
-		fmt.Fprintln(os.Stderr, "error reading standard error:", err)
+		fmt.Fprintln(os.Stderr, "error: failed to read stdin: ", err)
 		os.Exit(1)
 	}
 }
