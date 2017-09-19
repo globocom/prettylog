@@ -16,6 +16,11 @@ import (
 )
 
 func main() {
+	if isCharDevice() {
+		fmt.Fprintln(os.Stderr, "Prettylog should be used to process the output of another application")
+		os.Exit(1)
+	}
+
 	// Disables log output so libraries won't pollute the stdout
 	log.SetOutput(ioutil.Discard)
 
@@ -41,4 +46,9 @@ func main() {
 		fmt.Fprintln(os.Stderr, "error reading standard error:", err)
 		os.Exit(1)
 	}
+}
+
+func isCharDevice() bool {
+	fileinfo, _ := os.Stdin.Stat()
+	return (fileinfo.Mode() & os.ModeCharDevice) == os.ModeCharDevice
 }
