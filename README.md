@@ -6,7 +6,7 @@ Ferramenta para exibição de logs estruturados em JSON em formato compatível c
 
 ## Instalação
 
-    go get github.com/globocom/prettylog
+    curl https://github.com/globocom/prettylog/raw/master/install.sh | sh 
 
 Assumindo que a pasta `$GOPATH/bin` esteja adicionada ao `PATH` do usuário atual, a aplicação ficará disponível para 
 utilização imediatamente após a instalação.
