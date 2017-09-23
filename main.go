@@ -12,6 +12,7 @@ import (
 	"log"
 
 	"github.com/globocom/prettylog/config"
+	"github.com/globocom/prettylog/parsers"
 	"github.com/globocom/prettylog/prettifiers"
 )
 
@@ -29,7 +30,9 @@ func main() {
 
 	config.Load(*verbosePtr)
 
-	prettifier := prettifiers.NewJsonPrettifier()
+	parser := &parsers.JsonLineParser{}
+	prettifier := &prettifiers.DefaultPrettifier{}
+
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -38,8 +41,12 @@ func main() {
 			continue
 		}
 
-		prettyline := prettifier.Prettify(line)
-		fmt.Println(prettyline)
+		parsed, err := parser.Parse(line)
+		if err == nil {
+			fmt.Println(prettifier.Prettify(parsed))
+		} else {
+			fmt.Println(line)
+		}
 	}
 
 	if err := scanner.Err(); err != nil {

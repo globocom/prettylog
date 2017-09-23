@@ -1,5 +1,7 @@
 package prettifiers
 
+import "github.com/globocom/prettylog/parsers"
+
 type Prettifier interface {
-	Prettify(string) string
+	Prettify(line *parsers.ParsedLine) string
 }
