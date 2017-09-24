@@ -1,58 +1,77 @@
 package main
 
 import (
-	"bufio"
-	"os"
+	"log"
 
-	"fmt"
-
-	"flag"
+	"github.com/urfave/cli"
 
 	"io/ioutil"
-	"log"
+
+	"os"
+
+	"bufio"
+	"fmt"
 
 	"github.com/globocom/prettylog/config"
 	"github.com/globocom/prettylog/parsers"
 	"github.com/globocom/prettylog/prettifiers"
 )
 
-func main() {
-	if isCharDevice() {
-		fmt.Fprintln(os.Stderr, "error: Prettylog should be used to process the output of another application")
-		os.Exit(1)
-	}
-
+func init() {
 	// Disables log output so libraries won't pollute the stdout
 	log.SetOutput(ioutil.Discard)
+}
 
-	verbosePtr := flag.Bool("verbose", false, "turns on verbose mode")
-	flag.Parse()
+func main() {
+	app := cli.NewApp()
+	app.Name = "Prettylog"
+	app.Usage = "Logs for human beings"
+	app.UsageText = "some-app | prettylog"
+	app.Description = "Prettylog processes JSON logs and prints them in a human-friendly format"
+	app.Version = "1.1.0"
+	app.HideHelp = true
+	app.Flags = []cli.Flag{
+		cli.BoolFlag{
+			Name:  "verbose",
+			Usage: "Enable verbose mode",
+		},
+	}
 
-	config.Load(*verbosePtr)
+	app.Action = defaultAction
+	app.Run(os.Args)
+}
+
+func defaultAction(ctx *cli.Context) error {
+	if isCharDevice() {
+		cli.ShowAppHelp(ctx)
+		return nil
+	}
+
+	config.Load(ctx.Bool("verbose"))
 
 	parser := &parsers.JsonLineParser{}
 	prettifier := &prettifiers.DefaultPrettifier{}
-
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		line := scanner.Text()
 		if line == "" {
-			fmt.Println(line)
+			fmt.Fprintln(os.Stdout, line)
 			continue
 		}
 
 		parsed, err := parser.Parse(line)
-		if err == nil {
-			fmt.Println(prettifier.Prettify(parsed))
-		} else {
-			fmt.Println(line)
+		if err != nil {
+			fmt.Fprintln(os.Stdout, line)
+			continue
 		}
+
+		fmt.Fprintln(os.Stdout, prettifier.Prettify(parsed))
 	}
 
 	if err := scanner.Err(); err != nil {
-		fmt.Fprintln(os.Stderr, "error: failed to read stdin: ", err)
-		os.Exit(1)
+		return cli.NewExitError("error: failed to read input: "+err.Error(), 1)
 	}
+	return nil
 }
 
 func isCharDevice() bool {
