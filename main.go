@@ -2,7 +2,9 @@ package main
 
 import (
 	"log"
+	"strings"
 
+	"github.com/fatih/color"
 	"github.com/urfave/cli"
 
 	"io/ioutil"
@@ -31,6 +33,11 @@ func main() {
 	app.Version = "1.1.0"
 	app.HideHelp = true
 	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "color",
+			Usage: "Colorize the output. Valid values: auto, always, never",
+			Value: "auto",
+		},
 		cli.BoolFlag{
 			Name:  "verbose",
 			Usage: "Enable verbose mode",
@@ -48,6 +55,7 @@ func defaultAction(ctx *cli.Context) error {
 	}
 
 	config.Load(ctx.Bool("verbose"))
+	enableColorizedOutput(ctx.String("color"))
 
 	parser := &parsers.JsonLineParser{}
 	prettifier := &prettifiers.DefaultPrettifier{}
@@ -77,4 +85,13 @@ func defaultAction(ctx *cli.Context) error {
 func isCharDevice() bool {
 	fileinfo, _ := os.Stdin.Stat()
 	return (fileinfo.Mode() & os.ModeCharDevice) == os.ModeCharDevice
+}
+
+func enableColorizedOutput(value string) {
+	switch strings.ToLower(value) {
+	case "always":
+		color.NoColor = false
+	case "never":
+		color.NoColor = true
+	}
 }
