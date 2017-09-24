@@ -11,9 +11,6 @@ import (
 
 	"os"
 
-	"bufio"
-	"fmt"
-
 	"github.com/globocom/prettylog/config"
 	"github.com/globocom/prettylog/parsers"
 	"github.com/globocom/prettylog/prettifiers"
@@ -57,27 +54,13 @@ func defaultAction(ctx *cli.Context) error {
 	config.Load(ctx.Bool("verbose"))
 	enableColorizedOutput(ctx.String("color"))
 
-	parser := &parsers.JsonLineParser{}
-	prettifier := &prettifiers.DefaultPrettifier{}
-	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if line == "" {
-			fmt.Fprintln(os.Stdout, line)
-			continue
-		}
-
-		parsed, err := parser.Parse(line)
-		if err != nil {
-			fmt.Fprintln(os.Stdout, line)
-			continue
-		}
-
-		fmt.Fprintln(os.Stdout, prettifier.Prettify(parsed))
+	input := &InputReader{
+		Parser:     &parsers.JsonLineParser{},
+		Prettifier: &prettifiers.DefaultPrettifier{},
 	}
-
-	if err := scanner.Err(); err != nil {
-		return cli.NewExitError("error: failed to read input: "+err.Error(), 1)
+	err := input.Read(os.Stdin, os.Stdout)
+	if err != nil {
+		return cli.NewExitError(err.Error(), 1)
 	}
 	return nil
 }
