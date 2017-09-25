@@ -10,9 +10,12 @@ import (
 	"github.com/globocom/prettylog/prettifiers"
 )
 
+type FilterFunc func(*parsers.ParsedLine) bool
+
 type InputReader struct {
 	Parser     parsers.LineParser
 	Prettifier prettifiers.Prettifier
+	Filter     FilterFunc
 }
 
 func (r *InputReader) Read(input io.Reader, output io.Writer) error {
@@ -30,7 +33,9 @@ func (r *InputReader) Read(input io.Reader, output io.Writer) error {
 			continue
 		}
 
-		fmt.Fprintln(output, r.Prettifier.Prettify(parsed))
+		if r.Filter(parsed) {
+			fmt.Fprintln(output, r.Prettifier.Prettify(parsed))
+		}
 	}
 
 	if err := scanner.Err(); err != nil {

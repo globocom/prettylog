@@ -30,6 +30,14 @@ func main() {
 	app.Version = "1.1.0"
 	app.HideHelp = true
 	app.Flags = []cli.Flag{
+		cli.StringSliceFlag{
+			Name:  "logger",
+			Usage: "Output lines containing the provided loggers only",
+		},
+		cli.StringSliceFlag{
+			Name:  "level",
+			Usage: "Output lines containing the provided levels only",
+		},
 		cli.StringFlag{
 			Name:  "color",
 			Usage: "Colorize the output. Valid values: auto, always, never",
@@ -57,6 +65,16 @@ func defaultAction(ctx *cli.Context) error {
 	input := &InputReader{
 		Parser:     &parsers.JsonLineParser{},
 		Prettifier: &prettifiers.DefaultPrettifier{},
+		Filter: func(line *parsers.ParsedLine) bool {
+			filtered := true
+			if loggers := ctx.StringSlice("logger"); len(loggers) > 0 {
+				filtered = filtered && contains(loggers, line.Logger)
+			}
+			if levels := ctx.StringSlice("level"); len(levels) > 0 {
+				filtered = filtered && contains(levels, line.Level)
+			}
+			return filtered
+		},
 	}
 	err := input.Read(os.Stdin, os.Stdout)
 	if err != nil {
@@ -77,4 +95,13 @@ func enableColorizedOutput(value string) {
 	case "never":
 		color.NoColor = true
 	}
+}
+
+func contains(slice []string, str string) bool {
+	for _, s := range slice {
+		if s == str {
+			return true
+		}
+	}
+	return false
 }
