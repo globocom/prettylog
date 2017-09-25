@@ -1,4 +1,4 @@
-package main
+package input
 
 import (
 	"bufio"
@@ -12,13 +12,13 @@ import (
 
 type FilterFunc func(*parsers.ParsedLine) bool
 
-type InputReader struct {
+type Reader struct {
 	Parser     parsers.LineParser
 	Prettifier prettifiers.Prettifier
 	Filter     FilterFunc
 }
 
-func (r *InputReader) Read(input io.Reader, output io.Writer) error {
+func (r *Reader) Start(input io.Reader, output io.Writer) error {
 	scanner := bufio.NewScanner(input)
 	for scanner.Scan() {
 		line := scanner.Text()

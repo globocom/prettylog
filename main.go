@@ -12,6 +12,7 @@ import (
 	"os"
 
 	"github.com/globocom/prettylog/config"
+	"github.com/globocom/prettylog/input"
 	"github.com/globocom/prettylog/parsers"
 	"github.com/globocom/prettylog/prettifiers"
 )
@@ -62,7 +63,7 @@ func defaultAction(ctx *cli.Context) error {
 	config.Load(ctx.Bool("verbose"))
 	enableColorizedOutput(ctx.String("color"))
 
-	input := &InputReader{
+	reader := &input.Reader{
 		Parser:     &parsers.JsonLineParser{},
 		Prettifier: &prettifiers.DefaultPrettifier{},
 		Filter: func(line *parsers.ParsedLine) bool {
@@ -76,7 +77,7 @@ func defaultAction(ctx *cli.Context) error {
 			return filtered
 		},
 	}
-	err := input.Read(os.Stdin, os.Stdout)
+	err := reader.Start(os.Stdin, os.Stdout)
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
 	}
