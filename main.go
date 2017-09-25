@@ -26,7 +26,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "Prettylog"
 	app.Usage = "Logs for human beings"
-	app.UsageText = "some-app | prettylog"
+	app.UsageText = "some-app | prettylog [options...]"
 	app.Description = "Prettylog processes JSON logs and prints them in a human-friendly format"
 	app.Version = "1.1.0"
 	app.HideHelp = true
