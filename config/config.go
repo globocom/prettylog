@@ -18,13 +18,16 @@ var (
 	mu       sync.RWMutex
 )
 
-func Load(verbose bool) {
-	setDefaults()
-
+func init() {
 	viper.SetConfigType("yaml")
 	viper.SetConfigName(".prettylog")
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("$HOME/")
+}
+
+func Load(verbose bool) {
+	setDefaults()
+
 	err := viper.ReadInConfig()
 	if err != nil && verbose {
 		fmt.Fprintf(os.Stderr, "error: failed to read configuration file: %v\n", err)
