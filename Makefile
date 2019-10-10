@@ -9,4 +9,7 @@ install:
 	@go build -o ${GOPATH}/bin/$(binary_name)
 
 test:
+ifeq (, $(shell which ginkgo))
+	go get github.com/onsi/ginkgo/ginkgo
+endif
 	@ginkgo -r .
