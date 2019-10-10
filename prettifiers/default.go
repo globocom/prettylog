@@ -13,6 +13,7 @@ import (
 const (
 	SEPARATOR       = " "
 	FIELD_SEPARATOR = "="
+	FIELD_QUOTES    = "\""
 )
 
 type DefaultPrettifier struct{}
@@ -70,7 +71,13 @@ func writeFieldsTo(buffer *bytes.Buffer, fields [][]string, colorsAttrs []color.
 			buffer.WriteString(field[0])
 		}
 		buffer.WriteString(FIELD_SEPARATOR)
-		buffer.WriteString(field[1])
+		if strings.Contains(field[1], " ") {
+			buffer.WriteString(FIELD_QUOTES)
+			buffer.WriteString(field[1])
+			buffer.WriteString(FIELD_QUOTES)
+		} else {
+			buffer.WriteString(field[1])
+		}
 		buffer.WriteString(SEPARATOR)
 	}
 }

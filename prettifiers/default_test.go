@@ -27,6 +27,8 @@ const (
 	FIELD2_VALUE = "42"
 	FIELD3_NAME  = "field3"
 	FIELD3_VALUE = "true"
+	FIELD4_NAME  = "field4"
+	FIELD4_VALUE = "1 2 3 4 5"
 )
 
 var _ = Describe("Default prettifier", func() {
@@ -142,12 +144,13 @@ func getParsedLine(timestamp string, level string) *parsers.ParsedLine {
 			{FIELD1_NAME, FIELD1_VALUE},
 			{FIELD2_NAME, FIELD2_VALUE},
 			{FIELD3_NAME, FIELD3_VALUE},
+			{FIELD4_NAME, FIELD4_VALUE},
 		},
 	}
 }
 
 func getFormattedLine(timestamp string, level string, levelColor color.Attribute) string {
-	return fmt.Sprintf("%s %s %s %s %s %s=%s %s=%s %s=%s ",
+	return fmt.Sprintf("%s %s %s %s %s %s=%s %s=%s %s=%s %s=\"%s\" ",
 		color.New(color.FgYellow).Add(color.Faint).Sprint(timestamp),
 		color.New(color.FgWhite).Add(color.Faint).Sprint(LOGGER),
 		color.New(color.FgWhite).Add(color.Faint).Sprint(CALLER),
@@ -155,5 +158,6 @@ func getFormattedLine(timestamp string, level string, levelColor color.Attribute
 		MESSAGE,
 		color.New(levelColor).Sprint(FIELD1_NAME), FIELD1_VALUE,
 		color.New(levelColor).Sprint(FIELD2_NAME), FIELD2_VALUE,
-		color.New(levelColor).Sprint(FIELD3_NAME), FIELD3_VALUE)
+		color.New(levelColor).Sprint(FIELD3_NAME), FIELD3_VALUE,
+		color.New(levelColor).Sprint(FIELD4_NAME), FIELD4_VALUE)
 }
