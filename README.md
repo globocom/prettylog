@@ -1,42 +1,42 @@
 # Pretty Log
 
-Ferramenta para exibição de logs estruturados em JSON em formato compatível com seres humanos.
+Tool for displaying structured logs in JSON in a human-compatible format.
 
 ![Prettylog](https://github.com/globocom/prettylog/raw/master/prettylog.png)
 
-## Instalação
+## Installation
 
     curl https://github.com/globocom/prettylog/raw/master/install.sh | sh 
 
-Assumindo que a pasta `$GOPATH/bin` esteja adicionada ao `PATH` do usuário atual, a aplicação ficará disponível para 
-utilização imediatamente após a instalação.
+Assuming the `$GOPATH/bin` folder is added to the current user's `PATH` folder, the application will be available for 
+use immediately after installation.
 
-## Funcionamento
+## Operation
 
-Prettylog processa logs contendo um número arbitrário de campos, e produz uma saída amigável no seguinte formato:
+Prettylog processes logs containing an arbitrary number of fields, and produces a friendly output in the following format:
 
     <TIMESTAMP> <LOGGER> <CALLER> <LEVEL> <MESSAGE> <FIELD1>=<VALUE> <FIELD2>=<VALUE> ...
 
-Se um determinado campo não existir no log, ele será ignorado na saída gerada.
+If a particular field does not exist in the log, it is ignored in the output generated.
 
-**NOTA**: Atualmente apenas logs no formato JSON são suportados. Logs em outros formatos, ou sem formato algum, serão
-impressos sem nenhuma modificação.
+**NOTE***: Currently only logs in JSON format are supported. Logs in other formats, or without any format, will be
+printed without any changes.
 
-## Utilização
+## Usage
 
-A ferramenta foi projetada para ler diretamente o `stdout` de uma aplicação que produza logs em formato estruturado:
+The tool is designed to directly read the `stdout` of an application that produces logs in structured format:
 
     app | prettylog
 
-Se a aplicação escrever logs no `stderr` ao invés do `stdout`, um redirecionamento é necessário para a ferramenta 
-funcionar corretamente:
+If the application writes logs in `stderr` instead of `stdout`, a redirection is required for the tool. 
+function correctly:
 
     app 2>&1 | prettylog
 
-## Configuração
+## Configuration
 
-A ferramenta pode ser configurada através do arquivo `.prettylog.yml`, que pode estar localizado tanto localmente (na
-pasta onde a ferramenta é executada), quando globalmente (na pasta `$HOME`). A estrutura do arquivo é a seguinte:
+The tool can be configured through the `.prettylog.yml` file, which can be located both locally (in the
+folder where the tool is executed), when globally (in the `$HOME` folder). The file structure is as follows:
 
     timestamp:
       key:     <string>
@@ -71,21 +71,20 @@ pasta onde a ferramenta é executada), quando globalmente (na pasta `$HOME`). A 
       padding: <int>
       color:   <list of int>
 
-Cada chave configura a formatação de um campo do log, e o significado de cada propriedade é descrito abaixo:
+Each key configures the formatting of a log field, and the meaning of each property is described below:
 
-- **key**: Nome do campo a ser extraído do log da aplicação.
-- **visible**: Flag indicando se o campo será exibido pela ferramenta.
-- **padding**: Quantidade de espaços em branco a serem adicionados à direita do texto do campo.
-- **color/colors**: Atributos de cor usados para colorir o texto do campo. Até 3 valores podem ser informados 
-(foreground, background e effects), de acordo com a [tabela para cores ASCII](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors).
+- **key**: Name of the field to be extracted from the application log.
+- **visible**: Flag indicating whether the field will be displayed by the tool.
+- **padding**: Number of blanks to be added to the right of the field text.
+- **color/colors**: Color attributes used to colorize the field text. Up to 3 values can be entered 
+(foreground, background e effects), according to the [ASCII color chart](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors).
 
-## Utilização com outras ferramentas de linha de comando
+## Use with other command line tools
 
-Prettylog pode ser utilizado em conjunto com outras ferramentas de procesamento de output, como o `grep`. Entretanto, 
-para que a formatação da saída seja feita corretamente, é necessário desligar qualquer buffer que não seja por linha. 
-Por exemplo, com o `grep` basta utilizar a opção `--line-buffered`:
+Prettylog can be used in conjunction with other output processing tools, such as `grep`. However, 
+In order for the output to be formatted correctly, you must turn off any buffers that are not per line. 
+For example, with `grep` just use the `--line-buffered` option:
 
     app | grep --line-buffered -v debug | prettylog
 
-Se a ferramenta fizer uso de um buffer e não fornecer uma forma nativa de desligá-lo, tente usar o 
-[stdbuff](https://www.gnu.org/software/coreutils/manual/html_node/stdbuf-invocation.html).
+If the tool makes use of a buffer and does not provide a native way to turn it off, try using the [stdbuff](https://www.gnu.org/software/coreutils/manual/html_node/stdbuf-invocation.html).
