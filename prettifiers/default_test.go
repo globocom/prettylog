@@ -2,6 +2,7 @@ package prettifiers_test
 
 import (
 	"strings"
+	"time"
 
 	"github.com/globocom/prettylog/config"
 	. "github.com/globocom/prettylog/prettifiers"
@@ -9,14 +10,14 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
+	"github.com/globocom/prettylog/parsers"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/viper"
-	"github.com/globocom/prettylog/parsers"
 )
 
 const (
-	TIME         = "2017-01-01T12:10:11"
+	TIME         = "2019-10-16T07:51:08-03:00"
 	LOGGER       = "root"
 	CALLER       = "main.go:10"
 	MESSAGE      = "foobar"
@@ -40,57 +41,84 @@ var _ = Describe("Default prettifier", func() {
 	Context("level is DEBUG", func() {
 		It("should return a formatted string containing all fields", func() {
 			// Arrange
-			line := getParsedLine("debug")
+			line := getParsedLine(TIME, "debug")
 
 			// Act
 			result := sut.Prettify(line)
 
 			// Assert
-			Expect(result).To(BeIdenticalTo(getFormattedLine("debug", color.FgMagenta)))
+			Expect(result).To(BeIdenticalTo(getFormattedLine(TIME, "debug", color.FgMagenta)))
 		})
 	})
 
 	Context("level is INFO", func() {
 		It("should return a formatted string containing all fields", func() {
 			// Arrange
-			line := getParsedLine("info")
+			line := getParsedLine(TIME, "info")
 
 			// Act
 			result := sut.Prettify(line)
 
 			// Assert
-			Expect(result).To(BeIdenticalTo(getFormattedLine("info", color.FgBlue)))
+			Expect(result).To(BeIdenticalTo(getFormattedLine(TIME, "info", color.FgBlue)))
 		})
 	})
 
 	Context("level is WARN", func() {
 		It("should return a formatted string containing all fields", func() {
 			// Arrange
-			line := getParsedLine("warn")
+			line := getParsedLine(TIME, "warn")
 
 			// Act
 			result := sut.Prettify(line)
 
 			// Assert
-			Expect(result).To(BeIdenticalTo(getFormattedLine("warn", color.FgYellow)))
+			Expect(result).To(BeIdenticalTo(getFormattedLine(TIME, "warn", color.FgYellow)))
 		})
 	})
 
 	Context("level is ERROR", func() {
 		It("should return a formatted string containing all fields", func() {
 			// Arrange
-			line := getParsedLine("error")
+			line := getParsedLine(TIME, "error")
 
 			// Act
 			result := sut.Prettify(line)
 
 			// Assert
-			Expect(result).To(BeIdenticalTo(getFormattedLine("error", color.FgRed)))
+			Expect(result).To(BeIdenticalTo(getFormattedLine(TIME, "error", color.FgRed)))
+		})
+	})
+
+	Context("timestamp format setting is defined", func() {
+		It("should return timestamp formatted", func() {
+
+			// Set temporary config
+			config.GetSettings().Timestamp.Format = "02/01/2006"
+
+			// Arrange
+			tsFormat := config.GetSettings().Timestamp.Format
+			parsedTime, err := time.Parse(time.RFC3339, TIME)
+			if err != nil {
+				fmt.Println(err)
+			}
+			ts := parsedTime.Format(tsFormat)
+			line := getParsedLine(ts, "error")
+
+			// Act
+			result := sut.Prettify(line)
+
+			// Unset config
+			config.GetSettings().Timestamp.Format = "02/01/2006"
+
+			// Assert
+			Expect(result).To(BeIdenticalTo(getFormattedLine(ts, "error", color.FgRed)))
 		})
 	})
 })
 
 func setDefaultConfig() {
+	viper.Set("timestamp.format", time.RFC3339)
 	viper.Set("timestamp.key", "time")
 	viper.Set("logger.key", "logger")
 	viper.Set("logger.padding", 0)
@@ -103,9 +131,9 @@ func setDefaultConfig() {
 	viper.Set("message.padding", 0)
 }
 
-func getParsedLine(level string) *parsers.ParsedLine {
+func getParsedLine(timestamp string, level string) *parsers.ParsedLine {
 	return &parsers.ParsedLine{
-		Timestamp: TIME,
+		Timestamp: timestamp,
 		Logger:    LOGGER,
 		Level:     level,
 		Caller:    CALLER,
@@ -118,9 +146,9 @@ func getParsedLine(level string) *parsers.ParsedLine {
 	}
 }
 
-func getFormattedLine(level string, levelColor color.Attribute) string {
+func getFormattedLine(timestamp string, level string, levelColor color.Attribute) string {
 	return fmt.Sprintf("%s %s %s %s %s %s=%s %s=%s %s=%s ",
-		color.New(color.FgYellow).Add(color.Faint).Sprint(TIME),
+		color.New(color.FgYellow).Add(color.Faint).Sprint(timestamp),
 		color.New(color.FgWhite).Add(color.Faint).Sprint(LOGGER),
 		color.New(color.FgWhite).Add(color.Faint).Sprint(CALLER),
 		color.New(levelColor).Sprint(strings.ToUpper(level)),

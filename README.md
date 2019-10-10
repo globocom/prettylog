@@ -42,6 +42,7 @@ pasta onde a ferramenta é executada), quando globalmente (na pasta `$HOME`). A 
       key:     <string>
       visible: <bool> 
       color:   <list of int>
+      format:  <string>
 
     logger:
       key:     <string>
@@ -78,6 +79,8 @@ Cada chave configura a formatação de um campo do log, e o significado de cada 
 - **padding**: Quantidade de espaços em branco a serem adicionados à direita do texto do campo.
 - **color/colors**: Atributos de cor usados para colorir o texto do campo. Até 3 valores podem ser informados 
 (foreground, background e effects), de acordo com a [tabela para cores ASCII](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors).
+- **format**: Atributo exclusivo para Timestamp que define o formato da data a ser exibido na tela. O valor desse atributo
+deve seguir as [especificações da linguagem Go](https://golang.org/pkg/time/#pkg-constants) para formato de datas.
 
 ## Utilização com outras ferramentas de linha de comando
 

@@ -2,8 +2,8 @@ package prettifiers
 
 import (
 	"bytes"
-
 	"strings"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/globocom/prettylog/config"
@@ -22,7 +22,12 @@ func (p *DefaultPrettifier) Prettify(line *parsers.ParsedLine) string {
 	buffer := &bytes.Buffer{}
 
 	if settings.Timestamp.Visible {
-		writeTo(buffer, line.Timestamp, 0, settings.Timestamp.Color)
+		ts, err := time.Parse(time.RFC3339, line.Timestamp)
+		if err != nil || settings.Timestamp.Format == "" {
+			writeTo(buffer, line.Timestamp, 0, settings.Timestamp.Color)
+		} else {
+			writeTo(buffer, ts.Format(settings.Timestamp.Format), 0, settings.Timestamp.Color)
+		}
 	}
 
 	if settings.Logger.Visible && line.Logger != "" {
