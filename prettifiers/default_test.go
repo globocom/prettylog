@@ -9,10 +9,10 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
+	"github.com/globocom/prettylog/parsers"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/viper"
-	"github.com/globocom/prettylog/parsers"
 )
 
 const (

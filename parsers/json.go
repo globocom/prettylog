@@ -1,8 +1,8 @@
 package parsers
 
 import (
-	"github.com/tidwall/gjson"
 	"github.com/globocom/prettylog/config"
+	"github.com/tidwall/gjson"
 )
 
 type JsonLineParser struct{}
