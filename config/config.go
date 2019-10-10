@@ -22,6 +22,7 @@ func init() {
 	viper.SetConfigType("yaml")
 	viper.SetConfigName(".prettylog")
 	viper.AddConfigPath(".")
+	viper.AddConfigPath("./..")
 	viper.AddConfigPath("$HOME/")
 }
 

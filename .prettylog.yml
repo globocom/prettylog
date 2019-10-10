@@ -2,6 +2,7 @@ timestamp:
   key: time
   visible: true
   colors: [32,12,34]
+  format: "02/01/2006 15:04:05"
 
 logger:
   key: logger
