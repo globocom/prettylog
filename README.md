@@ -38,7 +38,7 @@ funcionar corretamente:
 ## Configuração
 
 A ferramenta pode ser configurada através do arquivo `.prettylog.yml`, que pode estar localizado tanto localmente (na
-pasta onde a ferramenta é executada), quando globalmente (na pasta `$HOME`). A estrutura do arquivo é a seguinte:
+pasta onde a ferramenta é executada), quanto globalmente (na pasta `$HOME`). A estrutura do arquivo é a seguinte:
 
     timestamp:
       key:     <string>
