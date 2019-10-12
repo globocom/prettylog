@@ -1,6 +1,6 @@
 # Pretty Log
 
-Tool for exhibiting structured logs.
+Command line tool for exhibiting structured logs.
 
 ![Prettylog](https://github.com/globocom/prettylog/raw/master/prettylog.png)
 
@@ -15,28 +15,29 @@ installation.
 
 ## How does it work
 
-Prettylog process logs with an arbitrary number of fields, resulting in a friendly output in the following format:
+Prettylog process logs with an arbitrary number of fields, resulting in a human friendly output in the following format:
 
     <TIMESTAMP> <LOGGER> <CALLER> <LEVEL> <MESSAGE> <FIELD1>=<VALUE> <FIELD2>=<VALUE> ...
 
 If a certain field does not exist in the log, it is ignored in the generated output.
 
-**NOTE**: Currently, only logs in JSON format are supported. Logs in other formats, or without any format at all, will
-be printed with no changes.
+**NOTE**: Currently, only logs in JSON are supported. Logs in other formats, or without any format at all, will be
+printed with no changes.
 
 ## How to use
 
-The tool is projected to read directly the `stdout` of an application which produces logs in structured format:
+This tool is projected to read `stdout` directly from an application which produces logs in any structured format:
 
     app | prettylog
 
-May the application write logs to `stderr` instead of `stdout`, redirecting is necessary for the tool to work properly:
+If the application write logs to `stderr` instead of `stdout`, then redirecting is necessary for the tool to work
+properly:
 
     app 2>&1 | prettylog
 
 ## Configuration
 
-The tool read its configurations through the `.prettylog.yml` file, localized both locally (in the same folder where the tool
+The tool can be configured through the `.prettylog.yml` file, localized both locally (in the same folder where the tool
 is executed) and globally (in the `$HOME` folder). The file structure is the following:
 
     timestamp:
