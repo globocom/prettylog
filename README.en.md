@@ -37,7 +37,7 @@ properly:
 
 ## Configuration
 
-The tool can be configured through the `.prettylog.yml` file, localized both locally (in the same folder where the tool
+The tool can be configured through the `.prettylog.yml` file, located both locally (in the same folder where the tool
 is executed) and globally (in the `$HOME` folder). The file structure is the following:
 
     timestamp:
