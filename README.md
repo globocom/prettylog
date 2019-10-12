@@ -6,7 +6,7 @@ A tool for displaying JSON structured logs in a way that is compatible with huma
 ## Installing
     curl https://github.com/globocom/prettylog/raw/master/install.sh | sh 
 
-Assuming that the folder `$GOPATH/bin` is added to the current user's `PATH`, the application will be available immediately after installation.
+Assuming that the `$GOPATH/bin` folder is added to the current user's `PATH`, the application will be available immediately after installation.
 
 ## Functionality
 
@@ -30,7 +30,7 @@ If an application writes logs on `stderr` instead of `stdout`, a redirect is nec
 
 ## Configuration
 
-The tool can be configurated through the `.prettylog.yml` file, which can be found both locally (on the directory which the tool is executed), and globally (on the `$HOME` folder). The folder structure is as follows:
+The tool can be configurated through the `.prettylog.yml` file, which can be found both locally (on the directory which the tool is executed) and globally (on the `$HOME` folder). The folder structure is as follows:
 
     timestamp:
       key:     <string>
@@ -79,5 +79,3 @@ Prettylog can be utilized together with other output processing tools, such as `
     app | grep --line-buffered -v debug | prettylog
 
 If the tool doesn't make use of a buffer and doesn't provide a way to turn it off, try using [stdbuff](https://www.gnu.org/software/coreutils/manual/html_node/stdbuf-invocation.html).
-
-
