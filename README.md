@@ -4,6 +4,8 @@ Ferramenta para exibição de logs estruturados em JSON em formato compatível c
 
 ![Prettylog](https://github.com/globocom/prettylog/raw/master/prettylog.png)
 
+_Read this in [English](README.en.md)_
+
 ## Instalação
 
     curl https://github.com/globocom/prettylog/raw/master/install.sh | sh 
