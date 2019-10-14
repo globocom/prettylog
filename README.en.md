@@ -1,6 +1,6 @@
 # Pretty Log
 
-Command line tool for exhibiting structured logs.
+Command line tool for exhibiting JSON structured logs in human readable format.
 
 ![Prettylog](https://github.com/globocom/prettylog/raw/master/prettylog.png)
 
@@ -13,7 +13,7 @@ _Ler em [Português](README.md)_
 Considering folder `$GOPATH/bin` is in current user `PATH`, the application will be available for use right after
 installation.
 
-## How does it work
+## Features
 
 Prettylog process logs with an arbitrary number of fields, resulting in a human friendly output in the following format:
 
@@ -24,7 +24,7 @@ If a certain field does not exist in the log, it is ignored in the generated out
 **NOTE**: Currently, only logs in JSON are supported. Logs in other formats, or without any format at all, will be
 printed with no changes.
 
-## How to use
+## Usage
 
 This tool is projected to read `stdout` directly from an application which produces logs in any structured format:
 
