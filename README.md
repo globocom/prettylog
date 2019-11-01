@@ -99,8 +99,10 @@ Each key configures the formatting of a log field, and the meaning of each prope
 **visible**: Flag indicating if the field will be displayed by the tool.
 
 **padding**: Amount of whitespace to add to the right of the field text.
+
 **color / colors**: Color attributes used to color the field text. Up to 3 values ​​can be entered.
 (foreground, background, and effects) according to the [ASCII color chart] (https://en.wikipedia.org/wiki/ANSI_escape_code#Colors).
+
 **format**: Unique attribute for Timestamp that defines the date format to be displayed on the screen. The value of this attribute
 must follow the [Go language specifications] (https://golang.org/pkg/time/#pkg-constants) for date format.
 
@@ -128,6 +130,4 @@ Por exemplo, com o `grep` basta utilizar a opção `--line-buffered`:) -->
 
     app | grep --line-buffered -v debug | prettylog
 
-If the tool makes use of a buffer and does not provide a native way to turn it off, try using the
-
-[stdbuff](https://www.gnu.org/software/coreutils/manual/html_node/stdbuf-invocation.html).
+If the tool makes use of a buffer and does not provide a native way to turn it off, try using the [stdbuff](https://www.gnu.org/software/coreutils/manual/html_node/stdbuf-invocation.html).
