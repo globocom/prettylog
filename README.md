@@ -1,46 +1,42 @@
 # Pretty Log
 
-Ferramenta para exibição de logs estruturados em JSON em formato compatível com seres humanos.
+Tool made to show logs structured in JSON in a format compatible with human beings.
 
 ![Prettylog](https://github.com/globocom/prettylog/raw/master/prettylog.png)
 
-## Instalação
+## Installation
 
-    curl https://github.com/globocom/prettylog/raw/master/install.sh | sh 
+    curl https://github.com/globocom/prettylog/raw/master/install.sh | sh
 
-Assumindo que a pasta `$GOPATH/bin` esteja adicionada ao `PATH` do usuário atual, a aplicação ficará disponível para 
-utilização imediatamente após a instalação.
+Assuming that the folder `$GOPATH/bin` is already added to `PATH` for the current user, the application will be available right after the installation.
 
-## Funcionamento
+## How it works
 
-Prettylog processa logs contendo um número arbitrário de campos, e produz uma saída amigável no seguinte formato:
+Pretty log processes logs containing an arbitrary number of fields and delivers a friendly output in this format:
 
     <TIMESTAMP> <LOGGER> <CALLER> <LEVEL> <MESSAGE> <FIELD1>=<VALUE> <FIELD2>=<VALUE> ...
 
-Se um determinado campo não existir no log, ele será ignorado na saída gerada.
+If a certain field does not exist in the log, it will be ignored in the output.
 
-**NOTA**: Atualmente apenas logs no formato JSON são suportados. Logs em outros formatos, ou sem formato algum, serão
-impressos sem nenhuma modificação.
+**NOTE**: Currently only JSON logs are supported. Logs in other formats, or logs without any format will be printed without changes.
 
-## Utilização
+## Utilization
 
-A ferramenta foi projetada para ler diretamente o `stdout` de uma aplicação que produza logs em formato estruturado:
+The tool was made to read directly from the `stdout` of a structured log application:
 
     app | prettylog
 
-Se a aplicação escrever logs no `stderr` ao invés do `stdout`, um redirecionamento é necessário para a ferramenta 
-funcionar corretamente:
+If the application writes logs in `stderr` instead of `stdout`, a redirection is necessary in order for the application to run properly:
 
     app 2>&1 | prettylog
 
-## Configuração
+## Setup
 
-A ferramenta pode ser configurada através do arquivo `.prettylog.yml`, que pode estar localizado tanto localmente (na
-pasta onde a ferramenta é executada), quando globalmente (na pasta `$HOME`). A estrutura do arquivo é a seguinte:
+The tool can be configured using the file `.prettylog.yml`, which can be found locally (in the folder where the tool is run), or globally (in the folder `$HOME`. The file is structured as
 
     timestamp:
       key:     <string>
-      visible: <bool> 
+      visible: <bool>
       color:   <list of int>
       format:  <string>
 
@@ -48,7 +44,7 @@ pasta onde a ferramenta é executada), quando globalmente (na pasta `$HOME`). A 
       key:     <string>
       visible: <bool>
       padding: <int>
-      color:   <list of int> 
+      color:   <list of int>
 
     caller:
       key:     <string>
@@ -72,23 +68,18 @@ pasta onde a ferramenta é executada), quando globalmente (na pasta `$HOME`). A 
       padding: <int>
       color:   <list of int>
 
-Cada chave configura a formatação de um campo do log, e o significado de cada propriedade é descrito abaixo:
+Each key defines a field's log, and you can see each property below:
 
-- **key**: Nome do campo a ser extraído do log da aplicação.
-- **visible**: Flag indicando se o campo será exibido pela ferramenta.
-- **padding**: Quantidade de espaços em branco a serem adicionados à direita do texto do campo.
-- **color/colors**: Atributos de cor usados para colorir o texto do campo. Até 3 valores podem ser informados 
-(foreground, background e effects), de acordo com a [tabela para cores ASCII](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors).
-- **format**: Atributo exclusivo para Timestamp que define o formato da data a ser exibido na tela. O valor desse atributo
-deve seguir as [especificações da linguagem Go](https://golang.org/pkg/time/#pkg-constants) para formato de datas.
+- **key**: Field name to be extracted from application log
+- **visible**: Indicate which field will be shown from Prettylog
+- **padding**: Number of white spaces that will be added after the text
+- **color/colors**: Allow to color textfield. You can use up to 3 values (foreground, background and effects), according to [ASCII table](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors).
+- **format**: Exclusive used for Timestamp which define date format to be shown on screen. This attribute must follow [Golang specification](https://golang.org/pkg/time/#pkg-constants) for date format.
 
-## Utilização com outras ferramentas de linha de comando
+## Utilization with other command line tools
 
-Prettylog pode ser utilizado em conjunto com outras ferramentas de procesamento de output, como o `grep`. Entretanto, 
-para que a formatação da saída seja feita corretamente, é necessário desligar qualquer buffer que não seja por linha. 
-Por exemplo, com o `grep` basta utilizar a opção `--line-buffered`:
+Prettylog can be used alongside other output processing tools, such as `grep`. But, in order for the information to be output correctly, it is necessary to shut off any not lined buffer. For example, in `grep`you will only need to use the option `--line-buffered`:
 
     app | grep --line-buffered -v debug | prettylog
 
-Se a ferramenta fizer uso de um buffer e não fornecer uma forma nativa de desligá-lo, tente usar o 
-[stdbuff](https://www.gnu.org/software/coreutils/manual/html_node/stdbuf-invocation.html).
+If the tool makes use of a buffer and there is no native option to turn it off, try using [stdbuff](https://www.gnu.org/software/coreutils/manual/html_node/stdbuf-invocation.html).
