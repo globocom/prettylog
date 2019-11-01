@@ -2,7 +2,7 @@
 
 This tool was created to exhibit structured JSON logs to humans view.
 
-!Ferramenta para exibição de logs estruturados em JSON em formato compatível com seres humanos.
+[comment]: # Ferramenta para exibição de logs estruturados em JSON em formato compatível com seres humanos.
 
 ![Prettylog](https://github.com/globocom/prettylog/raw/master/prettylog.png)
 
