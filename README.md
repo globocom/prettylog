@@ -29,8 +29,8 @@ If a given field does not exist in the log, it will be ignored in the generated 
 
 **NOTE**: Nowadays only JSON format logs are supported. Logs in other formats, or without any format, will be printed without modification.
 
-[comment]: #(**NOTA**: Atualmente apenas logs no formato JSON são suportados. Logs em outros formatos, ou sem formato algum, serão
-impressos sem nenhuma modificação.)
+<!-- **NOTA**: Atualmente apenas logs no formato JSON são suportados. Logs em outros formatos, ou sem formato algum, serão
+impressos sem nenhuma modificação.) -->
 
 ## Execution
 
@@ -42,8 +42,9 @@ The Prettylog tool is designed to directly read `stdout` from an application tha
 
 If the application writes logs to `stderr` instead of` stdout`, a redirect is required for the tool to work correctly:
 
-[comment]: # (Se a aplicação escrever logs no `stderr` ao invés do `stdout`, um redirecionamento é necessário para a ferramenta 
-funcionar corretamente:)
+<!-- Se a aplicação escrever logs no `stderr` ao invés do `stdout`, um redirecionamento é necessário para a ferramenta 
+funcionar corretamente:
+-->
 
     app 2>&1 | prettylog
 
@@ -51,8 +52,9 @@ funcionar corretamente:)
 
 The Prettylog tool could be configured from the `.prettylog.yml` file, which can be located either locally (in the folder where the tool runs) or globally (in the `$ HOME` folder). The file structure is as follows:
 
-[comment]: # (A ferramenta pode ser configurada através do arquivo `.prettylog.yml`, que pode estar localizado tanto localmente (na
-pasta onde a ferramenta é executada), quando globalmente (na pasta `$HOME`). A estrutura do arquivo é a seguinte:)
+<!-- A ferramenta pode ser configurada através do arquivo `.prettylog.yml`, que pode estar localizado tanto localmente (na
+pasta onde a ferramenta é executada), quando globalmente (na pasta `$HOME`). A estrutura do arquivo é a seguinte:
+-->
 
     timestamp:
       key:     <string>
@@ -92,12 +94,14 @@ Each key configures the formatting of a log field, and the meaning of each prope
 
 [comment]: # (Cada chave configura a formatação de um campo do log, e o significado de cada propriedade é descrito abaixo:)
 
-**key**: the field name to be extracted from the application log
+**key**: the field name to be extracted from the application log.
+
 **visible**: Flag indicating if the field will be displayed by the tool.
-** padding **: Amount of whitespace to add to the right of the field text.
-** color / colors **: Color attributes used to color the field text. Up to 3 values ​​can be entered.
+
+**padding**: Amount of whitespace to add to the right of the field text.
+**color / colors**: Color attributes used to color the field text. Up to 3 values ​​can be entered.
 (foreground, background, and effects) according to the [ASCII color chart] (https://en.wikipedia.org/wiki/ANSI_escape_code#Colors).
-** format **: Unique attribute for Timestamp that defines the date format to be displayed on the screen. The value of this attribute
+**format**: Unique attribute for Timestamp that defines the date format to be displayed on the screen. The value of this attribute
 must follow the [Go language specifications] (https://golang.org/pkg/time/#pkg-constants) for date format.
 
 
@@ -118,9 +122,9 @@ deve seguir as [especificações da linguagem Go](https://golang.org/pkg/time/#p
 Prettylog can be used in conjunction with other output processing tools such as `grep`. However, in order to format the output correctly, it is necessary to turn off any non-line buffer.
 For example, with `grep` just use the` --line-buffered` option:
 
-[comment]: # (Prettylog pode ser utilizado em conjunto com outras ferramentas de procesamento de output, como o `grep`. Entretanto, 
+<!-- Prettylog pode ser utilizado em conjunto com outras ferramentas de procesamento de output, como o `grep`. Entretanto, 
 para que a formatação da saída seja feita corretamente, é necessário desligar qualquer buffer que não seja por linha. 
-Por exemplo, com o `grep` basta utilizar a opção `--line-buffered`:)
+Por exemplo, com o `grep` basta utilizar a opção `--line-buffered`:) -->
 
     app | grep --line-buffered -v debug | prettylog
 
