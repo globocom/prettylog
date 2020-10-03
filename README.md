@@ -3,7 +3,7 @@
 [![GoDoc](https://godoc.org/github.com/globocom/prettylog?status.svg)](https://godoc.org/github.com/globocom/prettylog)
 [![Go Report Card](https://goreportcard.com/badge/github.com/globocom/prettylog)](https://goreportcard.com/report/github.com/globocom/prettylog)
 
-Application to display structured JSON logs in a format compatible with human beings.
+Application to display JSON logs structured in a format understandable by humans.
 
 ![Prettylog](https://github.com/globocom/prettylog/raw/master/prettylog.png)
 
