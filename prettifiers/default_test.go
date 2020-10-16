@@ -92,6 +92,19 @@ var _ = Describe("Default prettifier", func() {
 		})
 	})
 
+	Context("level not in settings", func() {
+		It("should return a formatted string containing all fields", func() {
+			// Arrange
+			line := getParsedLine(TIME, "other")
+
+			// Act
+			result := sut.Prettify(line)
+
+			// Assert
+			Expect(result).To(BeIdenticalTo(getFormattedLine(TIME, "other", color.FgRed)))
+		})
+	})
+
 	Context("timestamp format setting is defined", func() {
 		It("should return timestamp formatted", func() {
 
@@ -122,6 +135,7 @@ var _ = Describe("Default prettifier", func() {
 func setDefaultConfig() {
 	viper.Set("timestamp.format", time.RFC3339)
 	viper.Set("timestamp.key", "time")
+	viper.Set("timestamp.color", "30, 31, 32")
 	viper.Set("logger.key", "logger")
 	viper.Set("logger.padding", 0)
 	viper.Set("caller.key", "caller")
