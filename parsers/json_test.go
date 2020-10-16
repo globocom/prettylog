@@ -39,7 +39,8 @@ var _ = Describe("JSON line parser", func() {
 				"lvl": "warn",
 				"field1": "bar",
 				"field2": 42,
-				"field3": true
+				"field3": true,
+				"msg": "expected"
 			}`
 
 			sut := &JsonLineParser{}
@@ -54,6 +55,7 @@ var _ = Describe("JSON line parser", func() {
 				Logger:    "foo",
 				Caller:    "main.go:10",
 				Level:     "warn",
+				Message: "expected",
 				Fields: [][]string{
 					{"field1", "bar"},
 					{"field2", "42"},
