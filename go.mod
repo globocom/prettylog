@@ -23,8 +23,7 @@ require (
 	github.com/spf13/pflag v1.0.0 // indirect
 	github.com/spf13/viper v1.0.0
 	github.com/stretchr/testify v1.4.0 // indirect
-	github.com/tidwall/gjson v1.0.0
-	github.com/tidwall/match v0.0.0-20160830173930-173748da739a // indirect
+	github.com/tidwall/gjson v1.6.5
 	github.com/urfave/cli v1.20.0
 	golang.org/x/net v0.0.0-20170915142106-8351a756f30f // indirect
 	golang.org/x/sys v0.0.0-20170912235404-062cd7e4e682 // indirect
