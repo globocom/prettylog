@@ -51,12 +51,12 @@ func main() {
 	}
 
 	app.Action = defaultAction
-	app.Run(os.Args)
+	app.Run(os.Args) // #nosec
 }
 
 func defaultAction(ctx *cli.Context) error {
 	if isCharDevice() {
-		cli.ShowAppHelp(ctx)
+		cli.ShowAppHelp(ctx) // #nosec
 		return nil
 	}
 
