@@ -1,6 +1,6 @@
 module github.com/globocom/prettylog
 
-go 1.13
+go 1.17
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -29,4 +29,10 @@ require (
 	golang.org/x/sys v0.0.0-20170912235404-062cd7e4e682 // indirect
 	golang.org/x/text v0.1.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
+)
+
+require (
+	github.com/tidwall/match v1.0.3 // indirect
+	github.com/tidwall/pretty v1.0.2 // indirect
+	gopkg.in/yaml.v2 v2.2.2 // indirect
 )
