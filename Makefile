@@ -1,15 +1,15 @@
 binary_name=prettylog
 
-.PHONY: default install test
+.PHONY: default setup install test
 
 default:
-	@go build -o $(binary_name)
+	go build -o $(binary_name)
 
 install:
-	@go build -o ${GOPATH}/bin/$(binary_name)
+	go build -o ${GOPATH}/bin/$(binary_name)
+
+setup:
+	go install github.com/onsi/ginkgo/ginkgo@v1.16.4
 
 test:
-ifeq (, $(shell which ginkgo))
-	go get github.com/onsi/ginkgo/ginkgo
-endif
-	@ginkgo -r .
+	go run github.com/onsi/ginkgo/ginkgo@v1.16.4 -r .
