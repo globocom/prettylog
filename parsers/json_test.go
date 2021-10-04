@@ -62,12 +62,46 @@ var _ = Describe("JSON line parser", func() {
 			}))
 		})
 	})
+
+	Context("Line is parseable with another key", func() {
+		It("should return a parsed line", func() {
+			// Arrange
+			line := `{
+				"tt":"2017-01-01",
+				"log": "foo",
+				"call": "main.go:10",
+				"lv": "warn",
+				"field1": "bar",
+				"field2": 42,
+				"field3": true
+			}`
+
+			sut := &JsonLineParser{}
+
+			// Act
+			parsed, err := sut.Parse(line)
+
+			// Assert
+			Expect(err).To(Succeed())
+			Expect(parsed).To(Equal(&ParsedLine{
+				Timestamp: "2017-01-01",
+				Logger:    "foo",
+				Caller:    "main.go:10",
+				Level:     "warn",
+				Fields: [][]string{
+					{"field1", "bar"},
+					{"field2", "42"},
+					{"field3", "true"},
+				},
+			}))
+		})
+	})
 })
 
 func setDefaultConfig() {
-	viper.Set("timestamp.key", "t")
-	viper.Set("logger.key", "lg")
-	viper.Set("caller.key", "ln")
-	viper.Set("level.key", "lvl")
-	viper.Set("message.key", "msg")
+	viper.Set("timestamp.key", []string{"t", "tt"})
+	viper.Set("logger.key", []string{"lg", "log"})
+	viper.Set("caller.key", []string{"ln", "call"})
+	viper.Set("level.key", []string{"lvl", "lv"})
+	viper.Set("message.key", []string{"msg", "ms"})
 }
