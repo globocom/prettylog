@@ -55,25 +55,25 @@ or globally (in `$HOME`):
 
 ```yaml
 timestamp:
-  key:     <string>
+  key:     <string or list of string>
   visible: <bool>
   color:   <list of int>
   format:  <string>
 
 logger:
-  key:     <string>
+  key:     <string or list of string>
   visible: <bool>
   padding: <int>
   color:   <list of int>
 
 caller:
-  key:     <string>
+  key:     <string or list of string>
   visible: <bool>
   padding: <int>
   color:   <list of int>
 
 level:
-  key:     <string>
+  key:     <string or list of string>
   visible: <bool>
   padding: <int>
   colors:
@@ -84,7 +84,7 @@ level:
     fatal: <list of int>
 
 message:
-  key:     <string>
+  key:     <string or list of string>
   padding: <int>
   color:   <list of int>
 ```
@@ -93,7 +93,7 @@ Each field has its own key and the following properties are available:
 
 | Name | Description |
 | - | - |
-|**key**| Field name. |
+|**key**| Field name, can be used with array values (time or [time, ts]) |
 |**visible**| Flag indicating whether the field will be printed. |
 |**padding**| Number of whitespaces that will be added to the right of the field. |
 |**color/colors**| Color attributes. Up to 3 values can be used (fg, bg and effects). More information [here](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors). |
