@@ -83,7 +83,7 @@ func setFieldDefaults(name string, key string, visible bool, padding int, colorA
 }
 
 type Field struct {
-	Key     string
+	Key     []string
 	Visible bool
 	Padding int
 	Color   []color.Attribute
