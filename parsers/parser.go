@@ -16,3 +16,12 @@ type ParsedLine struct {
 }
 
 var ErrNonParseableLine = errors.New("line could not be parsed")
+
+func containsKey(key string, configKeys []string) bool {
+	for _, i := range configKeys {
+		if i == key {
+			return true
+		}
+	}
+	return false
+}
