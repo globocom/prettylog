@@ -92,8 +92,8 @@ message:
 Each field has its own key and the following properties are available:
 
 | Name | Description |
-| - | - |
-|**key**| Field name, can be used with array values (time or [time, ts]) |
+| --- | --- |
+|**key**| Field name, can be used with array values (time or time,ts) |
 |**visible**| Flag indicating whether the field will be printed. |
 |**padding**| Number of whitespaces that will be added to the right of the field. |
 |**color/colors**| Color attributes. Up to 3 values can be used (fg, bg and effects). More information [here](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors). |

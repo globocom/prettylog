@@ -18,6 +18,10 @@ var (
 	mu       sync.RWMutex
 )
 
+const (
+	keySeparator = ","
+)
+
 func init() {
 	viper.SetConfigType("yaml")
 	viper.SetConfigName(".prettylog")
@@ -50,6 +54,15 @@ func updateSettings(verbose bool) {
 	if err != nil && verbose {
 		fmt.Fprintf(os.Stderr, "error: failed to load configuration file: %v\n", err)
 	}
+	prepareKeys()
+}
+
+func prepareKeys() {
+	settings.Timestamp.Keys = strings.Split(settings.Timestamp.Key, keySeparator)
+	settings.Caller.Keys = strings.Split(settings.Caller.Key, keySeparator)
+	settings.Logger.Keys = strings.Split(settings.Logger.Key, keySeparator)
+	settings.Level.Keys = strings.Split(settings.Level.Key, keySeparator)
+	settings.Message.Keys = strings.Split(settings.Message.Key, keySeparator)
 }
 
 func GetSettings() *Settings {
@@ -83,7 +96,8 @@ func setFieldDefaults(name string, key string, visible bool, padding int, colorA
 }
 
 type Field struct {
-	Key     []string
+	Key     string
+	Keys    []string
 	Visible bool
 	Padding int
 	Color   []color.Attribute

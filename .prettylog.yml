@@ -1,5 +1,5 @@
 timestamp:
-  key: [time, ts]
+  key: time,ts
   visible: true
   colors: [32,12,34]
   format: "02/01/2006 15:04:05"
@@ -15,7 +15,7 @@ caller:
   padding: 0
 
 level:
-  key: [level, lvl]
+  key: level,lvl
   visible: true
   padding: 5
   colors:
@@ -28,3 +28,4 @@ level:
 message:
   key: msg
   padding: 0
+

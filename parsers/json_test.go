@@ -99,9 +99,9 @@ var _ = Describe("JSON line parser", func() {
 })
 
 func setDefaultConfig() {
-	viper.Set("timestamp.key", []string{"t", "tt"})
-	viper.Set("logger.key", []string{"lg", "log"})
-	viper.Set("caller.key", []string{"ln", "call"})
-	viper.Set("level.key", []string{"lvl", "lv"})
-	viper.Set("message.key", []string{"msg", "ms"})
+	viper.Set("timestamp.key", "t,tt")
+	viper.Set("logger.key", "lg,log")
+	viper.Set("caller.key", "ln,call")
+	viper.Set("level.key", "lvl,lv")
+	viper.Set("message.key", "msg,ms")
 }
