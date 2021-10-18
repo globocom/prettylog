@@ -12,6 +12,8 @@
 
 # Prettylog
 
+*Read this in other languages: [English](README.md), [Portuguese](README.pt-br.md).*
+
 Command line tool that displays JSON logs in a human-friendly format.
 
 ![Prettylog](https://github.com/globocom/prettylog/raw/master/prettylog.png)
