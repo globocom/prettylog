@@ -24,7 +24,7 @@ Go 1.17+:
 
     go install github.com/globocom/prettylog
 
-Go 1.16 ou :
+Go 1.16 ou inferior:
 
     curl https://github.com/globocom/prettylog/raw/master/install.sh | sh
 
