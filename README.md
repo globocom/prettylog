@@ -18,15 +18,20 @@ Command line tool that displays JSON logs in a human-friendly format.
 
 ## Installation
 
-Go 1.17+:
+Go 1.18+:
+
+    go install github.com/globocom/prettylog@latest
+
+Go 1.17:
 
     go install github.com/globocom/prettylog
 
-Go 1.16 or older:
+Go 1.16 and older:
 
     curl https://github.com/globocom/prettylog/raw/master/install.sh | sh
 
-Prettylog will be installed to `$GOPATH/bin`. Make sure to add it to your `PATH` so you can run `prettylog` anywhere.
+Prettylog will be installed to `$GOPATH/bin`. Make sure to add it to your `PATH` to run `prettylog` anywhere.
+If the path is not set, it defaults to `$HOME/go/bin/prettylog`.
 
 ## How it works
 
@@ -35,7 +40,7 @@ following format:
 
     <TIMESTAMP> <LOGGER> <CALLER> <LEVEL> <MESSAGE> <FIELD1>=<VALUE> <FIELD2>=<VALUE> ...
 
-Non-existent fields will be ignored and messages not encoded as JSON will be printed as is.
+Non-existent fields will be ignored, and messages not encoded as JSON will be printed as is.
 
 ## Usage
 
