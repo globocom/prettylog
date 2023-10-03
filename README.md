@@ -20,7 +20,7 @@ Command line tool that displays JSON logs in a human-friendly format.
 
 Go 1.17+:
 
-    go install github.com/globocom/prettylog
+    go install github.com/globocom/prettylog@latest
 
 Go 1.16 or older:
 
